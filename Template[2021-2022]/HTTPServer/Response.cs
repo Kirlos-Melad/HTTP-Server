@@ -90,7 +90,7 @@ namespace HTTPServer
                 headerLines.Add(locationString + redirectoinPath + "\n");
 
             // add blank line to mark the end of header lines
-            headerLines.Add(string.Empty);
+            headerLines.Add("\n");
 
             return headerLines;
         }
