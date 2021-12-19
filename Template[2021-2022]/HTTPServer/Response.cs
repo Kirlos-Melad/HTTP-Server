@@ -18,7 +18,7 @@ namespace HTTPServer
 
     class Response
     {
-        string responseString;
+        private string responseString;
         public string ResponseString
         {
             get
@@ -26,24 +26,73 @@ namespace HTTPServer
                 return responseString;
             }
         }
-        StatusCode code;
-        List<string> headerLines = new List<string>();
+
         public Response(StatusCode code, string contentType, string content, string redirectoinPath)
         {
-            throw new NotImplementedException();
-            // TODO: Add headlines (Content-Type, Content-Length,Date, [location if there is redirection])
+            // Create response string
 
+            // Adding status line
+            responseString = GetStatusLine(code);
 
-            // TODO: Create the request string
+            // Adding header lines
+            List<string> headerLines = GetHeaderLines(contentType, content.Length, redirectoinPath);
+            foreach (string line in headerLines)
+                responseString += line;
 
+            // Adding the content
+            responseString += content;
         }
 
         private string GetStatusLine(StatusCode code)
         {
-            // TODO: Create the response status line and return it
+            // Create the response status line and return it
             string statusLine = string.Empty;
+            statusLine = "HTTP/1.0 ";
+            statusLine = code.ToString() + " ";
+            switch (code)
+            {
+                case StatusCode.OK:
+                    statusLine += "OK\n";
+                    break;
+                case StatusCode.NotFound:
+                    statusLine += "Not Found\n";
+                    break;
+                case StatusCode.InternalServerError:
+                    statusLine += "Internal Server Error\n";
+                    break;
+                case StatusCode.BadRequest:
+                    statusLine += "Bad Request\n";
+                    break;
+                case StatusCode.Redirect:
+                    statusLine += "Redirect\n";
+                    break;
+            }
 
             return statusLine;
+        }
+
+        private List<string> GetHeaderLines(string contentType, int contentLength, string redirectoinPath)
+        {
+            List<string> headerLines = new List<string>();
+
+            // Add headlines(Content-Type, Content-Length, Date, [location if there is redirection])
+            string contentTypeString = "Content-Type: " + contentType + "\n";
+            string contentLengthString = "Content-Length: " + contentLength.ToString() + "\n";
+            string dateString = "Date: " + DateTime.Now.ToString("R") + "\n"; // R is the format given in the example
+            string locationString = "Location: ";
+
+            headerLines.Add(contentTypeString);
+            headerLines.Add(contentLengthString);
+            headerLines.Add(dateString);
+
+            // add location if a redirection is done
+            if (redirectoinPath.Length != 0)
+                headerLines.Add(locationString + redirectoinPath + "\n");
+
+            // add blank line to mark the end of header lines
+            headerLines.Add(string.Empty);
+
+            return headerLines;
         }
     }
 }
