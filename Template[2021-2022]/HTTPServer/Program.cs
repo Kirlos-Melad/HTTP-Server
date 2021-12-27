@@ -22,33 +22,16 @@ namespace HTTPServer
 
         static void CreateRedirectionRulesFile()
         {
-            string oldURI = " ";
-            string newURI = " ";
+            
             // TODO: Create file named redirectionRules.txt
             if (!File.Exists("redirectionRules.txt"))
             {
                 FileStream fs = new FileStream("redirectionRules.txt", FileMode.CreateNew);
+                StreamWriter sw = new StreamWriter("redirectionRules.txt");
+                sw.WriteLine("aboutus.html,aboutus2.html");
                 fs.Close();
             }
 
-            StreamWriter sw = new StreamWriter("redirectionRules.txt");
-            sw.WriteLine("aboutus.html,aboutus2.html");
-
-
-            //StreamReader sr = new StreamReader("redirectionRules.txt");
-            string[] lines = File.ReadAllLines("redirectionRules.txt");
-            foreach (string line in lines)
-            {
-                string[] splitLine = line.Split(',');
-                oldURI = splitLine[0].ToString();
-                newURI = splitLine[1].ToString();
-
-            };
-
-            if (Configuration.RedirectionRules.ContainsKey(oldURI))
-            {
-                Response res = new Response(StatusCode.Redirect, "text/html", "redirect.html", Configuration.RedirectionRules[oldURI]);
-            }
             // TODO: Create file named redirectionRules.txt
             // each line in the file specify a redirection rule
             // example: "aboutus.html,aboutus2.html"

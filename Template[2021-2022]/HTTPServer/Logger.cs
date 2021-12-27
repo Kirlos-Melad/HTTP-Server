@@ -21,10 +21,11 @@ namespace HTTPServer
             }
             using (StreamWriter sw = File.AppendText("log.txt"))
             {
-                sw.WriteLine("Datetime: " + ex.Message);
-                sw.WriteLine("message: " + DateTime.Now.ToString());
+                sw.WriteLine("Datetime: " + DateTime.Now.ToString());
+                sw.WriteLine("message: " + ex.Message);
                 sw.Close();
             }
+            
         }
     }
 }
