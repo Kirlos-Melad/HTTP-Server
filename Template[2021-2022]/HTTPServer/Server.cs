@@ -31,7 +31,9 @@ namespace HTTPServer
             while (true)
             {
                 //TODO: accept connections and start thread for each accepted connection.
+
                 Socket clientSocket = this.serverSocket.Accept();
+
                 Thread newThread = new Thread(new ParameterizedThreadStart(HandleConnection));
                 ThreadPool.QueueUserWorkItem(HandleConnection, clientSocket);
                 newThread.Start(clientSocket);
@@ -62,13 +64,14 @@ namespace HTTPServer
                     Request request_ = new Request(received);
 
                     // TODO: Call HandleRequest Method that returns the response
-                    Response _response;
-                    _response = HandleRequest(request_);
+                    Response _response = HandleRequest(request_);
                     string response = _response.ToString();
 
                     // TODO: Send Response back to client
                     data = Encoding.ASCII.GetBytes(response);
                     _clientSocket.Send(data);
+
+                    // ****not really sure about what I'm doing here****
 
                 }
                 catch (Exception ex)
@@ -85,7 +88,6 @@ namespace HTTPServer
         Response HandleRequest(Request request)
         {
             throw new NotImplementedException();
-            string content;
             try
             {
                 //TODO: check for bad request 
@@ -110,34 +112,43 @@ namespace HTTPServer
         private string GetRedirectionPagePathIFExist(string relativePath)
         {
             // using Configuration.RedirectionRules return the redirected page path if exists else returns empty
-            foreach (KeyValuePair<string, string> kvp in Configuration.RedirectionRules) { 
-                if (relativePath == kvp.Value)
-                {
-                    return kvp.Value;
-                }
-            }
+
             return string.Empty;
         }
 
         private string LoadDefaultPage(string defaultPageName)
         {
+            Exception ex = new Exception(); // what should the exception hold? is it correct ??
             string filePath = Path.Combine(Configuration.RootPath, defaultPageName);
             // TODO: check if filepath not exist log exception using Logger class and return empty string
-
-            // else read file and return its content
-            return string.Empty;
+            bool Exist = File.Exists(filePath);
+            if (!Exist)
+            {
+                Logger.LogException(ex); // Is it right this way ??
+                return string.Empty;
+            }
+            else
+            {
+                // else read file and return its content
+                string content = File.ReadAllText(filePath);
+                return content;
+            }
         }
 
         private void LoadRedirectionRules(string filePath)
         {
             try
             {
-                // TODO: using the filepath paramter read the redirection rules from file 
+                // TODO: using the filepath paramter read the redirection rules from file
+                string[] Rule = File.ReadAllLines(filePath);
+                Dictionary<String, String> dict = Rule.ToDictionary(item => item.Split(',')[0], item => item.Split(',')[1]);
                 // then fill Configuration.RedirectionRules dictionary 
+                Configuration.RedirectionRules = dict;
             }
             catch (Exception ex)
             {
                 // TODO: log exception using Logger class
+                Logger.LogException(ex);
                 Environment.Exit(1);
             }
         }
