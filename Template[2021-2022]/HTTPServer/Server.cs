@@ -65,13 +65,13 @@ namespace HTTPServer
 
                     // TODO: Call HandleRequest Method that returns the response
                     Response _response = HandleRequest(request_);
-                    string response = _response.ToString();
+                    string response = _response.ResponseString;
 
                     // TODO: Send Response back to client
                     data = Encoding.ASCII.GetBytes(response);
                     _clientSocket.Send(data);
 
-                    // ****not really sure about what I'm doing here****
+                    
 
                 }
                 catch (Exception ex)
@@ -111,24 +111,23 @@ namespace HTTPServer
                     if (Configuration.RedirectionRules.ContainsKey(request.relativeURI))
                     {
                         physicalPath = Configuration.RootPath + Configuration.RedirectionRules[request.relativeURI];
-                    }
-
-                    //TODO: check file exists
-                    if (File.Exists(Configuration.RedirectionRules[request.relativeURI]))
-                    {
-                        content = LoadDefaultPage(Configuration.RedirectionDefaultPageName);
-                        response = new Response(StatusCode.Redirect, "text/html", content, physicalPath);
-                    }
-
-                    if (!File.Exists(physicalPath))
-                    {
-                        content = LoadDefaultPage(Configuration.NotFoundDefaultPageName);
-                        physicalPath = Configuration.RootPath + Configuration.NotFoundDefaultPageName;
-                        response = new Response(StatusCode.NotFound, "text/html", content, physicalPath);
+                        //TODO: check file exists
+                        if (File.Exists(Configuration.RedirectionRules[request.relativeURI]))
+                        {
+                            content = LoadDefaultPage(Configuration.RedirectionDefaultPageName);
+                            response = new Response(StatusCode.Redirect, "text/html", content, physicalPath);
+                        }
+                        else
+                        {
+                            content = LoadDefaultPage(Configuration.NotFoundDefaultPageName);
+                            physicalPath = Configuration.RootPath + Configuration.NotFoundDefaultPageName;
+                            response = new Response(StatusCode.NotFound, "text/html", content, physicalPath);
+                        }
                     }
 
                     else
                     {
+                        //if(physicalPath)
                         //TODO: read the physical file
                         content = File.ReadAllText(physicalPath);
 

@@ -92,7 +92,7 @@ namespace HTTPServer
             //
             if (ValidateIsURI(tokens[1]))
                 this.relativeURI = tokens[1].Remove(0,1);  // remove the uri slash and replace it with douple slash \\
-
+            
             //
             if (tokens[2] == "HTTP/1.0")
                 httpVersion = HTTPVersion.HTTP10;
@@ -114,7 +114,7 @@ namespace HTTPServer
         private bool LoadHeaderLines()
         {
             //throw new NotImplementedException();
-            for (int i = 1; i < requestLines.Length; i++)
+            for (int i = 1; i < requestLines.Length -1; i++)
             {
                 int separator = this.requestLines[i].IndexOf(':');
                 if (separator == -1)
@@ -136,8 +136,7 @@ namespace HTTPServer
         private bool ValidateBlankLine()
         {
             //throw new NotImplementedException();
-            for (int i = 0; i < requestLines.Length; i++)
-                if (requestLines[i] == "\r\n")
+                if (requestLines[requestLines.Length-1] == "\r\n")
                     return true;
 
             return false;
