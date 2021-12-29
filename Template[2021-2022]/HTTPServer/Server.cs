@@ -102,34 +102,30 @@ namespace HTTPServer
                     physicalPath = Configuration.RootPath + Configuration.BadRequestDefaultPageName;
                     response = new Response(StatusCode.BadRequest, "text/html", content, physicalPath);
                 }
-                else
+                else 
                 {
                     //TODO: map the relativeURI in request to get the physical path of the resource.
                     physicalPath = Configuration.RootPath + request.relativeURI;
 
                     //TODO: check for redirect
-                    if (Configuration.RedirectionRules.ContainsKey(request.relativeURI))
+                    string str = GetRedirectionPagePathIFExist(request.relativeURI);
+                    if (str != string.Empty)
                     {
-                        physicalPath = Configuration.RootPath + Configuration.RedirectionRules[request.relativeURI];
-                        //TODO: check file exists
-                        if (File.Exists(Configuration.RedirectionRules[request.relativeURI]))
-                        {
-                            content = LoadDefaultPage(Configuration.RedirectionDefaultPageName);
-                            response = new Response(StatusCode.Redirect, "text/html", content, physicalPath);
-                        }
-                        else
-                        {
-                            content = LoadDefaultPage(Configuration.NotFoundDefaultPageName);
-                            physicalPath = Configuration.RootPath + Configuration.NotFoundDefaultPageName;
-                            response = new Response(StatusCode.NotFound, "text/html", content, physicalPath);
-                        }
+                        physicalPath = Configuration.RootPath + str;
+                        content = LoadDefaultPage(Configuration.RedirectionDefaultPageName);
+                        response = new Response(StatusCode.Redirect, "text/html", content, physicalPath);
                     }
-
-                    else
+                    //TODO: check file exists
+                    else if (!File.Exists(physicalPath))
                     {
-                        //if(physicalPath)
+                        content = LoadDefaultPage(Configuration.NotFoundDefaultPageName);
+                        physicalPath = Configuration.RootPath + Configuration.NotFoundDefaultPageName;
+                        response = new Response(StatusCode.NotFound, "text/html", content, physicalPath);
+                    }
+                    else 
+                    {
                         //TODO: read the physical file
-                        content = File.ReadAllText(physicalPath);
+                        content = LoadDefaultPage(physicalPath);
 
                         // Create OK response
                         response = new Response(StatusCode.OK, "text/html", content, physicalPath);
@@ -144,7 +140,7 @@ namespace HTTPServer
                 // TODO: in case of exception, return Internal Server Error. 
                 content = LoadDefaultPage(Configuration.InternalErrorDefaultPageName);
                 physicalPath = Configuration.RootPath + Configuration.InternalErrorDefaultPageName;
-                response = new Response(StatusCode.InternalServerError, "html", content, physicalPath);
+                response = new Response(StatusCode.InternalServerError, "text/html", content, physicalPath);
                 return response;
             }
             return response;
