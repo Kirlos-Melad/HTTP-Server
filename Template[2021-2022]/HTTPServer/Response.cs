@@ -47,7 +47,7 @@ namespace HTTPServer
         {
             // Create the response status line and return it
             string statusLine = string.Empty;
-            statusLine = "HTTP/1.0 ";
+            statusLine = Configuration.ServerHTTPVersion + ' ';
             statusLine = code.ToString() + " ";
             switch (code)
             {
@@ -74,23 +74,26 @@ namespace HTTPServer
         private List<string> GetHeaderLines(string contentType, int contentLength, string redirectoinPath)
         {
             List<string> headerLines = new List<string>();
+            string crlf = "\r\n";
 
             // Add headlines(Content-Type, Content-Length, Date, [location if there is redirection])
-            string contentTypeString = "Content-Type: " + contentType + "\n";
-            string contentLengthString = "Content-Length: " + contentLength.ToString() + "\n";
-            string dateString = "Date: " + DateTime.Now.ToString("R") + "\n"; // R is the format given in the example
+            string contentTypeString = "Content-Type: " + contentType + crlf;
+            string contentLengthString = "Content-Length: " + contentLength.ToString() + crlf;
+            string dateString = "Date: " + DateTime.Now.ToString("R") + crlf; // R is the format given in the example
             string locationString = "Location: ";
+            string serverTypeString = "Server: " + Configuration.ServerType;
 
             headerLines.Add(contentTypeString);
             headerLines.Add(contentLengthString);
             headerLines.Add(dateString);
+            headerLines.Add(serverTypeString);
 
             // add location if a redirection is done
             if (redirectoinPath.Length != 0)
-                headerLines.Add(locationString + redirectoinPath + "\n");
+                headerLines.Add(locationString + redirectoinPath + crlf);
 
             // add blank line to mark the end of header lines
-            headerLines.Add("\r\n");
+            headerLines.Add(crlf);
 
             return headerLines;
         }

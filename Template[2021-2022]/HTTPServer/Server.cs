@@ -20,11 +20,14 @@ namespace HTTPServer
 
             //TODO: initialize this.serverSocket
             this.serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            serverSocket.Bind(new IPEndPoint(IPAddress.Any, portNumber));
         }
 
         public void StartServer()
         {
             // TODO: Listen to connections, with large backlog.
+
             this.serverSocket.Listen(200);
 
             // TODO: Accept connections in while loop and start a thread for each connection on function "Handle Connection"
@@ -192,7 +195,6 @@ namespace HTTPServer
             {
                 // TODO: log exception using Logger class
                 Logger.LogException(ex);
-                Environment.Exit(1);
             }
         }
     }

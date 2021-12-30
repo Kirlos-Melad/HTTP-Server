@@ -38,6 +38,7 @@ namespace HTTPServer
         public Request(string requestString)
         {
             this.requestString = requestString;
+            headerLines = new Dictionary<string, string>();
         }
         /// <summary>
         /// Parses the request string and loads the *request line*, *header lines* and *content*, returns false if there is a parsing error
