@@ -27,8 +27,10 @@ namespace HTTPServer
             if (!File.Exists("redirectionRules.txt"))
             {
                 FileStream fs = new FileStream("redirectionRules.txt", FileMode.CreateNew);
-                StreamWriter sw = new StreamWriter("redirectionRules.txt");
+                StreamWriter sw = new StreamWriter(fs);
                 sw.WriteLine("aboutus.html,aboutus2.html");
+
+                sw.Close();
                 fs.Close();
             }
 

@@ -74,8 +74,6 @@ namespace HTTPServer
                     data = Encoding.ASCII.GetBytes(response);
                     _clientSocket.Send(data);
 
-                    
-
                 }
                 catch (Exception ex)
                 {
@@ -83,7 +81,6 @@ namespace HTTPServer
                     Logger.LogException(ex);
                 }
             }
-
             // TODO: close client socket
             _clientSocket.Close();
         }
@@ -102,27 +99,27 @@ namespace HTTPServer
                 if (!validReq)
                 {
                     content = LoadDefaultPage(Configuration.BadRequestDefaultPageName);
-                    physicalPath = Configuration.RootPath + Configuration.BadRequestDefaultPageName;
+                    physicalPath = Configuration.RootPath + "\\" + Configuration.BadRequestDefaultPageName;
                     response = new Response(StatusCode.BadRequest, "text/html", content, physicalPath);
                 }
                 else 
                 {
                     //TODO: map the relativeURI in request to get the physical path of the resource.
-                    physicalPath = Configuration.RootPath + request.relativeURI;
+                    physicalPath = Configuration.RootPath + "\\" + request.relativeURI;
 
                     //TODO: check for redirect
                     string str = GetRedirectionPagePathIFExist(request.relativeURI);
                     if (str != string.Empty)
                     {
-                        physicalPath = Configuration.RootPath + str;
-                        content = LoadDefaultPage(Configuration.RedirectionDefaultPageName);
+                        physicalPath = Configuration.RootPath + "\\" + str;
+                        content = LoadDefaultPage(str);
                         response = new Response(StatusCode.Redirect, "text/html", content, physicalPath);
                     }
                     //TODO: check file exists
                     else if (!File.Exists(physicalPath))
                     {
                         content = LoadDefaultPage(Configuration.NotFoundDefaultPageName);
-                        physicalPath = Configuration.RootPath + Configuration.NotFoundDefaultPageName;
+                        physicalPath = Configuration.RootPath + "\\" + Configuration.NotFoundDefaultPageName;
                         response = new Response(StatusCode.NotFound, "text/html", content, physicalPath);
                     }
                     else 
@@ -142,7 +139,7 @@ namespace HTTPServer
 
                 // TODO: in case of exception, return Internal Server Error. 
                 content = LoadDefaultPage(Configuration.InternalErrorDefaultPageName);
-                physicalPath = Configuration.RootPath + Configuration.InternalErrorDefaultPageName;
+                physicalPath = Configuration.RootPath + "\\" + Configuration.InternalErrorDefaultPageName;
                 response = new Response(StatusCode.InternalServerError, "text/html", content, physicalPath);
                 return response;
             }

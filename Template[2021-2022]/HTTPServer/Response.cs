@@ -46,27 +46,8 @@ namespace HTTPServer
         private string GetStatusLine(StatusCode code)
         {
             // Create the response status line and return it
-            string statusLine = string.Empty;
-            statusLine = Configuration.ServerHTTPVersion + ' ';
-            statusLine = code.ToString() + " ";
-            switch (code)
-            {
-                case StatusCode.OK:
-                    statusLine += "OK\n";
-                    break;
-                case StatusCode.NotFound:
-                    statusLine += "Not Found\n";
-                    break;
-                case StatusCode.InternalServerError:
-                    statusLine += "Internal Server Error\n";
-                    break;
-                case StatusCode.BadRequest:
-                    statusLine += "Bad Request\n";
-                    break;
-                case StatusCode.Redirect:
-                    statusLine += "Redirect\n";
-                    break;
-            }
+            string statusLine = Configuration.ServerHTTPVersion + ' ';
+            statusLine += ((int)code).ToString() + ' ' + code.ToString() + "\r\n";
 
             return statusLine;
         }
@@ -81,16 +62,16 @@ namespace HTTPServer
             string contentLengthString = "Content-Length: " + contentLength.ToString() + crlf;
             string dateString = "Date: " + DateTime.Now.ToString("R") + crlf; // R is the format given in the example
             string locationString = "Location: ";
-            string serverTypeString = "Server: " + Configuration.ServerType;
-
-            headerLines.Add(contentTypeString);
-            headerLines.Add(contentLengthString);
-            headerLines.Add(dateString);
-            headerLines.Add(serverTypeString);
+            string serverTypeString = "Server: " + Configuration.ServerType + crlf;
 
             // add location if a redirection is done
             if (redirectoinPath.Length != 0)
                 headerLines.Add(locationString + redirectoinPath + crlf);
+
+            headerLines.Add(dateString);
+            headerLines.Add(serverTypeString);
+            headerLines.Add(contentLengthString);
+            headerLines.Add(contentTypeString);
 
             // add blank line to mark the end of header lines
             headerLines.Add(crlf);

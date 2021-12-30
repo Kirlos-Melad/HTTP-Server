@@ -67,7 +67,7 @@ namespace HTTPServer
         private bool ParseRequestLine()
         {
             //throw new NotImplementedException();
-            this.requestLines = this.requestString.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            this.requestLines = this.requestString.Split(new string[] { "\r\n"}, StringSplitOptions.None);
             if (requestLines.Length < 3)
                 return false;
 
@@ -115,12 +115,12 @@ namespace HTTPServer
         private bool LoadHeaderLines()
         {
             //throw new NotImplementedException();
-            for (int i = 1; i < requestLines.Length -1; i++)
+            for (int i = 1; i < requestLines.Length - 2; i++)
             {
                 int separator = this.requestLines[i].IndexOf(':');
                 if (separator == -1)
                 {
-                    return false;
+                    return false; ;
                 }
                 if (this.requestLines[i][separator + 1] != ' ')
                     return false;
@@ -137,7 +137,7 @@ namespace HTTPServer
         private bool ValidateBlankLine()
         {
             //throw new NotImplementedException();
-                if (requestLines[requestLines.Length-1] == "\r\n")
+                if (requestLines[requestLines.Length-1] == String.Empty && requestLines[requestLines.Length - 2] == String.Empty)
                     return true;
 
             return false;
