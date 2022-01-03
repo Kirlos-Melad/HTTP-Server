@@ -111,9 +111,9 @@ namespace HTTPServer
                     string str = GetRedirectionPagePathIFExist(request.relativeURI);
                     if (str != string.Empty)
                     {
-                        physicalPath = Configuration.RootPath + "\\" + str;
-                        content = LoadDefaultPage(str);
-                        response = new Response(StatusCode.Redirect, "text/html", content, physicalPath);
+                        physicalPath = Configuration.RootPath + "\\" + Configuration.RedirectionDefaultPageName;
+                        content = LoadDefaultPage(physicalPath);
+                        response = new Response(StatusCode.Redirect, "text/html", content, Configuration.RedirectionRules[request.relativeURI]);
                     }
                     //TODO: check file exists
                     else if (!File.Exists(physicalPath))

@@ -137,7 +137,7 @@ namespace HTTPServer
         private bool ValidateBlankLine()
         {
             //throw new NotImplementedException();
-                if (requestLines[requestLines.Length-1] == String.Empty && requestLines[requestLines.Length - 2] == String.Empty)
+                if (requestLines[requestLines.Length-2] == String.Empty)
                     return true;
 
             return false;
