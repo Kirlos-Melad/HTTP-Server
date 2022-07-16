@@ -1,2 +1,2 @@
 # HTTP-Server
-HTTP Server using socket programing and multithreading
+Simulated HTTP Server behavior to a GET request using socket programming and multithreading
